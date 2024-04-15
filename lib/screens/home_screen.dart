@@ -75,9 +75,11 @@ class _HomePageState extends State<HomePage> {
                   return Text('Error: ${snapshot.error}');
                 } else {
                   return Container(
+                    width: 380,
+                    height: 100,
                     decoration: BoxDecoration(
                       color: Colors.pink[50],
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(15),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -103,6 +105,8 @@ class _HomePageState extends State<HomePage> {
                   return Text('Error: ${snapshot.error}');
                 } else {
                   return Container(
+                    width: 380,
+                    height: 100,
                     decoration: BoxDecoration(
                       color: Colors.pink[50],
                       borderRadius: BorderRadius.circular(10),
@@ -121,9 +125,36 @@ class _HomePageState extends State<HomePage> {
                 }
               },
             ),
+            SizedBox(
+              height: 30,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HistoryExpensesPage()),
+                );
+              },
+              child: Text(
+                'See History',
+                style: TextStyle(color: Colors.pink),
+              ),
+            ),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddExpensesPage()),
+          );
+        },
+        backgroundColor: Colors.pink,
+        child: Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
