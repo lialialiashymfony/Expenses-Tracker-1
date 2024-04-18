@@ -48,5 +48,5 @@ class DataService {
       // Handle error
       throw Exception('Failed to load data');
     }
-  }
+  } //coba lagi
 }
