@@ -4,6 +4,7 @@ import 'package:my_app/screens/history_expenses_page.dart';
 import 'package:my_app/screens/home_screen.dart';
 import 'package:my_app/screens/add_expense_page.dart';
 import 'package:my_app/screens/news_screen.dart';
+import 'package:my_app/screens/routes/SecondScreen/DatasDcreen/datas_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,7 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
     HomePage(),
     AddExpensesPage(),
     HistoryExpensesPage(),
-    LongListScreen()
+    LongListScreen(),
+    DatasScreen()
   ];
 
   final List<String> _appBarTitles = const [
@@ -46,6 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
     'Add',
     'History',
     'List',
+    'datas screen'
   ];
 
   @override
@@ -111,6 +114,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.pop(context);
               },
             ),
+            ListTile(
+              title: Text('datas screen'),
+              onTap: () {
+                setState(() {
+                  _selectedIndex = 4;
+                });
+                Navigator.pop(context);
+              },
+            ),
           ],
         ),
       ),
@@ -136,6 +148,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.article),
             label: 'List',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.abc_rounded),
+            label: 'datas screen',
           ),
         ],
         currentIndex: _selectedIndex,

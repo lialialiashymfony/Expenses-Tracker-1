@@ -135,6 +135,11 @@ class _HomePageState extends State<HomePage> {
                   MaterialPageRoute(
                       builder: (context) => HistoryExpensesPage()),
                 );
+
+                setState(() {
+                  _todayExpenses = _getTodayExpenses();
+                  _monthlyExpenses = _getMonthlyExpenses();
+                });
               },
               child: Text(
                 'See History',
