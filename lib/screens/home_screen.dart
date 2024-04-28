@@ -76,19 +76,35 @@ class _HomePageState extends State<HomePage> {
                 } else {
                   return Container(
                     width: 380,
-                    height: 100,
+                    height: 150,
                     decoration: BoxDecoration(
                       color: Colors.pink[50],
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: Text(
-                        'Today Expenses: ${snapshot.data?.toStringAsFixed(2)}',
-                        style: TextStyle(
-                            color: Colors.pink,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment
+                            .center, // Pusatkan widget secara vertikal
+                        children: [
+                          Text(
+                            'Today Expenses:',
+                            style: TextStyle(
+                              color: Colors.pink,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 5), // Spasi antara teks dan angka
+                          Text(
+                            '${snapshot.data?.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              color: Colors.pink,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
@@ -106,19 +122,35 @@ class _HomePageState extends State<HomePage> {
                 } else {
                   return Container(
                     width: 380,
-                    height: 100,
+                    height: 150,
                     decoration: BoxDecoration(
                       color: Colors.pink[50],
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: Text(
-                        'Monthly Expenses: ${snapshot.data?.toStringAsFixed(2)}',
-                        style: TextStyle(
-                            color: Colors.pink,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment
+                            .center, // Pusatkan widget secara vertikal
+                        children: [
+                          Text(
+                            'Monthly Expenses:',
+                            style: TextStyle(
+                              color: Colors.pink,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 5), // Spasi antara teks dan angka
+                          Text(
+                            '${snapshot.data?.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              color: Colors.pink,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );

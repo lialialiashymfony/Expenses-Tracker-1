@@ -49,4 +49,16 @@ class DataService {
       throw Exception('Failed to load data');
     }
   } //coba lagi
+
+  static Future<void> deleteDatas(int id) async {
+    await http.delete(Uri.parse('${Endpoints.datas}/$id'),
+        headers: {'Content-type': 'aplication/json'});
+  }
+
+  static Future<void> updateDatas(String id, String title, String body) async {
+    Map<String, String> data = {"id": id, "title": title, "body": body};
+    String jsonData = jsonEncode(data);
+    await http.put(Uri.parse('${Endpoints.datas}/$id'),
+        body: jsonData, headers: {'Content-type': 'application/json'});
+  }
 }

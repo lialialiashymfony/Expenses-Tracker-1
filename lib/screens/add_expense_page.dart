@@ -93,7 +93,10 @@ class _AddExpensePageState extends State<AddExpensesPage> {
                 // Menutup layar dan memperbarui UI dengan kembali ke layar sebelumnya
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => MyHomePage()),
+                  MaterialPageRoute(
+                      builder: (context) => MyHomePage(
+                            title: 'Home Page',
+                          )),
                 );
               },
               child: const Text('Add Expense'),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-// import 'package:my_app/screens/add_expense_page.dart';
 import 'package:my_app/screens/history_expenses_page.dart';
 import 'package:my_app/screens/home_screen.dart';
 import 'package:my_app/screens/add_expense_page.dart';
 import 'package:my_app/screens/news_screen.dart';
 import 'package:my_app/screens/routes/SecondScreen/DatasDcreen/datas_screen.dart';
+import 'package:my_app/screens/try.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,13 +20,24 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.pink,
       ),
-      home: const MyHomePage(),
+      // home: const MyHomePage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const MyHomePage(title: 'Home Page'),
+        '/add-expenses-page': (context) => const AddExpensesPage(),
+        '/history-expenses-page': (context) => HistoryExpensesPage(),
+        '/news-screen': (context) => const LongListScreen(),
+        '/datas-screen': (context) => const DatasScreen(),
+        '/try-screen': (context) => const TryScreen()
+      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -40,7 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
     AddExpensesPage(),
     HistoryExpensesPage(),
     LongListScreen(),
-    DatasScreen()
+    DatasScreen(),
+    TryScreen()
   ];
 
   final List<String> _appBarTitles = const [
@@ -48,8 +60,22 @@ class _MyHomePageState extends State<MyHomePage> {
     'Add',
     'History',
     'List',
-    'datas screen'
+    'Datas screen',
+    'Try screen'
   ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  void navigateAndCloseDrawer(BuildContext context, String routeName) {
+    if (Scaffold.of(context).isDrawerOpen) {
+      Navigator.pop(context); // Close the drawer first
+    }
+    Navigator.pushNamed(context, routeName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,57 +107,33 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               title: Text('Home Page'),
               onTap: () {
-                setState(() {
-                  _selectedIndex = 0;
-                });
+                _onItemTapped(0);
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: Text('Add Expense Page'),
               onTap: () {
-                setState(() {
-                  _selectedIndex = 1;
-                });
+                _onItemTapped(1);
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: Text('History Expenses Page'),
               onTap: () {
-                setState(() {
-                  _selectedIndex = 2;
-                });
+                _onItemTapped(2);
                 Navigator.pop(context);
               },
             ),
-            ListTile(
-              title: Text('List'),
-              onTap: () {
-                setState(() {
-                  _selectedIndex = 3;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('datas screen'),
-              onTap: () {
-                setState(() {
-                  _selectedIndex = 4;
-                });
-                Navigator.pop(context);
-              },
-            ),
+            listTilePush(context, 'News Screen', '/news-screen'),
+            listTilePush(context, 'Datas Screen', '/datas-screen'),
+            listTilePush(context, 'Try Screen', '/try-screen'),
           ],
         ),
       ),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _screens,
-      ),
+      body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.pink,
+        backgroundColor: Colors.white,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -145,23 +147,23 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.list),
             label: 'History',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.article),
-            label: 'List',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.abc_rounded),
-            label: 'datas screen',
-          ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.pink,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+        onTap: _onItemTapped,
       ),
+    );
+  }
+
+  ListTile listTilePush(
+      BuildContext context, String screenName, String routesname) {
+    return ListTile(
+      title: Text(screenName),
+      selected: _selectedIndex == 2,
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, routesname);
+      },
     );
   }
 }
