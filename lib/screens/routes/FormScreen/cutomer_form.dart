@@ -1,9 +1,13 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_app/endpoints/endpoints.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:my_app/screens/routes/SecondScreen/Customer Screen/customer_screen.dart';
 
 class CustomerFormScreen extends StatefulWidget {
   const CustomerFormScreen({Key? key}) : super(key: key);
@@ -15,9 +19,19 @@ class CustomerFormScreen extends StatefulWidget {
 class _CustomerFormScreenState extends State<CustomerFormScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  double _rating = 0;
+  // final _ratingController = TextEditingController();
+
+  // String _title = "";
+  // String _description = "";
+  // // double _rating = 0;
   File? _galleryFile;
   final picker = ImagePicker();
+
+  List<String> divisions = ['IT', 'Billing', 'Helpdesk'];
+  String? _selectedDivision;
+
+  List<String> priority = ['High', 'Medium', 'Low'];
+  String? _selectedPriority;
 
   _showPicker({required BuildContext context}) {
     showModalBottomSheet(
@@ -49,11 +63,21 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
     );
   }
 
-  Future getImage(ImageSource img) async {
+  Future getImage(
+    ImageSource img,
+  ) async {
     final pickedFile = await picker.pickImage(source: img);
-    setState(() {
-      _galleryFile = pickedFile != null ? File(pickedFile.path) : null;
-    });
+    XFile? xfilePick = pickedFile;
+    setState(
+      () {
+        if (xfilePick != null) {
+          _galleryFile = File(pickedFile!.path);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Nothing is selected')));
+        }
+      },
+    );
   }
 
   Future<void> _postDataWithImage(BuildContext context) async {
@@ -61,27 +85,41 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
       return; // Handle case where no image or title is provided
     }
 
-    final url = Uri.parse(Endpoints.dataNIM);
-    final request = http.MultipartRequest('POST', url);
+    var request = MultipartRequest('POST', Uri.parse(Endpoints.dataNIM));
     request.fields['title_issues'] = _titleController.text;
     request.fields['description_issues'] = _descriptionController.text;
-    request.fields['rating'] = _rating.toString();
+    request.fields['rating'] = rating.toString();
 
-    final file = await http.MultipartFile.fromPath('image', _galleryFile!.path);
-    request.files.add(file);
+    var multipartFile = await MultipartFile.fromPath(
+      'image',
+      _galleryFile!.path,
+    );
+    request.files.add(multipartFile);
 
-    try {
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);
+    request.send().then((response) {
+      // Handle response (success or error)
       if (response.statusCode == 201) {
         debugPrint('Data and image posted successfully!');
-        Navigator.pushReplacementNamed(context, '/customer-screen');
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const CustomerScreen()));
       } else {
         debugPrint('Error posting data: ${response.statusCode}');
       }
-    } catch (e) {
-      debugPrint('Error posting data: $e');
-    }
+    });
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose(); // Dispose of controller when widget is removed
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  double rating = 0;
+  void ratingUpdate(double userRating) {
+    setState(() {
+      rating = userRating;
+    });
   }
 
   @override
@@ -162,7 +200,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                                 decoration: BoxDecoration(
                                     border: Border(
                                         bottom: BorderSide(
-                                            color: Colors.grey.shade200))),
+                                            color: Colors.pink.shade200))),
                                 width: double.infinity,
                                 height: 150,
                                 child: _galleryFile == null
@@ -187,7 +225,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                               decoration: BoxDecoration(
                                   border: Border(
                                       bottom: BorderSide(
-                                          color: Colors.grey.shade200))),
+                                          color: Colors.pink.shade200))),
                               child: TextField(
                                 controller: _titleController,
                                 decoration: const InputDecoration(
@@ -202,7 +240,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                               decoration: BoxDecoration(
                                   border: Border(
                                       bottom: BorderSide(
-                                          color: Colors.grey.shade200))),
+                                          color: Colors.pink.shade200))),
                               child: TextField(
                                 controller: _descriptionController,
                                 decoration: const InputDecoration(
@@ -212,33 +250,79 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                                 ),
                               ),
                             ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          color: Colors.grey.shade200))),
-                              child: Row(
-                                children: [
-                                  const Text(
-                                    'Rating: ',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  Slider(
-                                    value: _rating,
-                                    onChanged: (newRating) {
-                                      setState(() {
-                                        _rating = newRating;
-                                      });
-                                    },
-                                    min: 0,
-                                    max: 5,
-                                    divisions: 5,
-                                    label: _rating.toStringAsFixed(1),
-                                  ),
-                                ],
-                              ),
+                            const SizedBox(
+                              height: 10,
                             ),
+                            const Text('Berikan Rating!',
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold)),
+                            RatingBar(
+                              minRating: 1,
+                              maxRating: 5,
+                              allowHalfRating: false,
+                              ratingWidget: RatingWidget(
+                                full: const Icon(
+                                  Icons.star,
+                                  color: Colors.pink,
+                                ),
+                                half: const Icon(
+                                  Icons.star_half,
+                                  color: Colors.pink,
+                                ),
+                                empty: const Icon(
+                                  Icons.star_border,
+                                  color: Colors.pink,
+                                ),
+                              ),
+                              onRatingUpdate: ratingUpdate,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text('Division'),
+                                    DropdownButton<String>(
+                                      value: _selectedDivision,
+                                      items: divisions.map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          _selectedDivision = newValue;
+                                        });
+                                      },
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text('Priority'),
+                                    DropdownButton<String>(
+                                      value: _selectedPriority,
+                                      items: priority.map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          _selectedPriority = newValue;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
                           ],
                         ),
                       ),

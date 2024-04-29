@@ -1,11 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-// import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:my_app/components/bottom_up_transation.dart';
 import 'package:my_app/dto/issue.dart';
 // import 'package:my_app/dto/issues.dart';
 import 'package:my_app/endpoints/endpoints.dart';
-// import 'package:my_app/screens/uts_post_screen.dart';
-// import 'package:my_app/screens/uts_update_screen.dart';
 import 'package:my_app/services/data_services.dart';
 import 'package:my_app/screens/routes/FormScreen/cutomer_form.dart';
 import 'package:my_app/screens/routes/FormScreen/edit_customer.dart';
@@ -14,10 +14,10 @@ class CustomerScreen extends StatefulWidget {
   const CustomerScreen({Key? key}) : super(key: key);
 
   @override
-  State<CustomerScreen> createState() => _CustomerScreen();
+  _CustomerScreenState createState() => _CustomerScreenState();
 }
 
-class _CustomerScreen extends State<CustomerScreen> {
+class _CustomerScreenState extends State<CustomerScreen> {
   Future<List<Issues>>? _dataIssues;
 
   @override
@@ -79,26 +79,26 @@ class _CustomerScreen extends State<CustomerScreen> {
               const SizedBox(
                 height: 10,
               ),
-              // RatingBar(
-              //   itemSize: 20,
-              //   ratingWidget: RatingWidget(
-              //     full: const Icon(
-              //       Icons.star,
-              //       color: Colors.black,
-              //     ),
-              //     half: const Icon(
-              //       Icons.star_half,
-              //       color: Colors.black,
-              //     ),
-              //     empty: const Icon(
-              //       Icons.star_border,
-              //       color: Colors.black,
-              //     ),
-              //   ),
-              //   ignoreGestures: true,
-              //   onRatingUpdate: (double rating) {},
-              //   initialRating: item.rating.toDouble(),
-              // ),
+              RatingBar(
+                itemSize: 20,
+                ratingWidget: RatingWidget(
+                  full: const Icon(
+                    Icons.star,
+                    color: Colors.pink,
+                  ),
+                  half: const Icon(
+                    Icons.star_half,
+                    color: Colors.pink,
+                  ),
+                  empty: const Icon(
+                    Icons.star_border,
+                    color: Colors.pink,
+                  ),
+                ),
+                ignoreGestures: true,
+                onRatingUpdate: (double rating) {},
+                initialRating: item.rating.toDouble(),
+              ),
               const SizedBox(height: 10),
               Text(
                 "createdAt: ${item.createdAt}",
@@ -141,7 +141,7 @@ class _CustomerScreen extends State<CustomerScreen> {
                     'OK',
                     style: TextStyle(
                       fontSize: 18,
-                      color: Colors.blue,
+                      color: Colors.pink,
                     ),
                   ),
                 ),
@@ -199,7 +199,7 @@ class _CustomerScreen extends State<CustomerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Customer Service Isssues'),
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.pink,
       ),
       body: Center(
         child: FutureBuilder<List<Issues>>(
@@ -220,7 +220,7 @@ class _CustomerScreen extends State<CustomerScreen> {
                       margin: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8.0),
                       decoration: BoxDecoration(
-                        color: Colors.blueGrey,
+                        color: Colors.pink.shade100,
                         border: Border.all(color: const Color(0xFFE0E0E0)),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -231,7 +231,7 @@ class _CustomerScreen extends State<CustomerScreen> {
                             width: 100,
                             height: 100,
                             decoration: BoxDecoration(
-                              color: Colors.grey,
+                              color: Colors.pink.shade100,
                               borderRadius: BorderRadius.circular(8.0),
                               image: DecorationImage(
                                   fit: BoxFit.cover,
@@ -257,26 +257,26 @@ class _CustomerScreen extends State<CustomerScreen> {
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              // RatingBar(
-                              //   itemSize: 20,
-                              //   ratingWidget: RatingWidget(
-                              //     full: const Icon(
-                              //       Icons.star,
-                              //       color: Colors.black,
-                              //     ),
-                              //     half: const Icon(
-                              //       Icons.star_half,
-                              //       color: Colors.black,
-                              //     ),
-                              //     empty: const Icon(
-                              //       Icons.star_border,
-                              //       color: Colors.black,
-                              //     ),
-                              //   ),
-                              //   ignoreGestures: true,
-                              //   onRatingUpdate: (double rating) {},
-                              //   initialRating: item.rating.toDouble(),
-                              // ),
+                              RatingBar(
+                                itemSize: 20,
+                                ratingWidget: RatingWidget(
+                                  full: const Icon(
+                                    Icons.star,
+                                    color: Colors.pink,
+                                  ),
+                                  half: const Icon(
+                                    Icons.star_half,
+                                    color: Colors.pink,
+                                  ),
+                                  empty: const Icon(
+                                    Icons.star_border,
+                                    color: Colors.pink,
+                                  ),
+                                ),
+                                ignoreGestures: true,
+                                onRatingUpdate: (double rating) {},
+                                initialRating: item.rating.toDouble(),
+                              ),
                               const SizedBox(height: 8),
                               Text(
                                 (item.deskripsi.length > 100)
@@ -325,16 +325,9 @@ class _CustomerScreen extends State<CustomerScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.pink,
         tooltip: 'Increment',
         onPressed: () {
-          // Navigator.pushReplacement(
-          //     context, BottomUpRoute(
-          //       page: const FormScreen()
-          //       ));
-
-          // ganti sesuai
-
           Navigator.pushReplacement(
               context, BottomUpRoute(page: const CustomerFormScreen()));
         },
