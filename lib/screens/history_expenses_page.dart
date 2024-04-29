@@ -3,6 +3,7 @@ import 'package:my_app/screens/add_expense_page.dart';
 import 'package:my_app/screens/database_helper.dart';
 import 'package:my_app/screens/edit_expense_page.dart';
 import 'package:my_app/screens/home_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HistoryExpensesPage extends StatefulWidget {
   @override
@@ -26,8 +27,11 @@ class _HistoryExpensesPageState extends State<HistoryExpensesPage> {
         backgroundColor: Colors.pink,
         title: Text(
           'History Expenses',
-          style: TextStyle(
-              fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+          style: GoogleFonts.poppins(
+            fontSize: 22,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ), // Judul halaman
       ),
       body: FutureBuilder(

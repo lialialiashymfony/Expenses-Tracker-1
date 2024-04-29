@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:my_app/main.dart';
 import 'package:my_app/screens/database_helper.dart';
 import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AddExpensesPage extends StatefulWidget {
   const AddExpensesPage({super.key});
 
   @override
-  State<AddExpensesPage> createState() => _AddExpensePageState();
+  State<AddExpensesPage> createState() => _AddExpensesPageState();
 }
 
-class _AddExpensePageState extends State<AddExpensesPage> {
+class _AddExpensesPageState extends State<AddExpensesPage> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -33,52 +34,80 @@ class _AddExpensePageState extends State<AddExpensesPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink,
-        title: const Text(
+        title: Text(
           'Add Your Expense Here!',
-          style: TextStyle(
-              color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
-        ),
+          style: GoogleFonts.poppins(
+            fontSize: 35,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ), // Judul halaman
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            TextField(
-              controller: titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(8),
+              child: TextField(
+                controller: titleController,
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(),
+                ),
+              ),
             ),
-            TextField(
-              controller: amountController,
-              decoration: const InputDecoration(labelText: 'Amount'),
-              keyboardType: TextInputType.number,
+            SizedBox(height: 8),
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(8),
+              child: TextField(
+                controller: amountController,
+                decoration: InputDecoration(
+                  labelText: 'Amount',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+              ),
             ),
-            TextField(
-              controller: descriptionController,
-              decoration: const InputDecoration(labelText: 'Description'),
+            SizedBox(height: 8),
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(8),
+              child: TextField(
+                controller: descriptionController,
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
+                ),
+              ),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBox(height: 8),
             GestureDetector(
               onTap: () {
                 _selectDate(context);
               },
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      selectedDate != null
-                          ? 'Date: ${DateFormat('dd-MM-yyyy').format(selectedDate!)}'
-                          : 'Select Date',
-                      style: TextStyle(fontSize: 16),
+              child: Container(
+                color: Colors.white,
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        selectedDate != null
+                            ? 'Date: ${DateFormat('dd-MM-yyyy').format(selectedDate!)}'
+                            : 'Select Date',
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ),
-                  ),
-                  Icon(Icons.calendar_today),
-                ],
+                    Icon(Icons.calendar_today),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 20.0),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 Map<String, dynamic> expense = {
@@ -94,9 +123,10 @@ class _AddExpensePageState extends State<AddExpensesPage> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => MyHomePage(
-                            title: 'Home Page',
-                          )),
+                    builder: (context) => MyHomePage(
+                      title: 'Home Page',
+                    ),
+                  ),
                 );
               },
               child: const Text('Add Expense'),

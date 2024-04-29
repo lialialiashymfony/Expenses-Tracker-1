@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:my_app/screens/add_expense_page.dart';
 import 'package:my_app/screens/database_helper.dart';
 import 'package:my_app/screens/history_expenses_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -57,8 +58,11 @@ class _HomePageState extends State<HomePage> {
         title: Text(
           'Welcome to Expenses Tracker!',
           textAlign: TextAlign.center,
-          style: TextStyle(
-              fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+          style: GoogleFonts.poppins(
+            fontSize: 22,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ), // Judul halaman
       ),
       body: Center(
@@ -78,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                     width: 380,
                     height: 150,
                     decoration: BoxDecoration(
-                      color: Colors.pink[50],
+                      color: Colors.pink.shade300,
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Padding(
@@ -89,19 +93,19 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Text(
                             'Today Expenses:',
-                            style: TextStyle(
-                              color: Colors.pink,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                            style: GoogleFonts.poppins(
+                              fontSize: 28,
+                              color: Colors.white,
+                              fontWeight: FontWeight.normal,
                             ),
                           ),
                           SizedBox(height: 5), // Spasi antara teks dan angka
                           Text(
                             '${snapshot.data?.toStringAsFixed(2)}',
-                            style: TextStyle(
-                              color: Colors.pink,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
+                            style: GoogleFonts.poppins(
+                              fontSize: 32,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],
@@ -124,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                     width: 380,
                     height: 150,
                     decoration: BoxDecoration(
-                      color: Colors.pink[50],
+                      color: Colors.pink.shade300,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
@@ -135,19 +139,19 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Text(
                             'Monthly Expenses:',
-                            style: TextStyle(
-                              color: Colors.pink,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                            style: GoogleFonts.poppins(
+                              fontSize: 28,
+                              color: Colors.white,
+                              fontWeight: FontWeight.normal,
                             ),
                           ),
                           SizedBox(height: 5), // Spasi antara teks dan angka
                           Text(
                             '${snapshot.data?.toStringAsFixed(2)}',
-                            style: TextStyle(
-                              color: Colors.pink,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
+                            style: GoogleFonts.poppins(
+                              fontSize: 32,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],
@@ -175,7 +179,11 @@ class _HomePageState extends State<HomePage> {
               },
               child: Text(
                 'See History',
-                style: TextStyle(color: Colors.pink),
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  color: Colors.pink.shade300,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ),
           ],

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/screens/custom_screen.dart';
 import 'package:my_app/screens/history_expenses_page.dart';
 import 'package:my_app/screens/home_screen.dart';
 import 'package:my_app/screens/add_expense_page.dart';
 import 'package:my_app/screens/news_screen.dart';
+import 'package:my_app/screens/routes/FormScreen/cutomer_form.dart';
+import 'package:my_app/screens/routes/SecondScreen/Customer%20Screen/customer_screen.dart';
 import 'package:my_app/screens/routes/SecondScreen/DatasDcreen/datas_screen.dart';
 import 'package:my_app/screens/try.dart';
 
@@ -28,7 +31,8 @@ class MyApp extends StatelessWidget {
         '/history-expenses-page': (context) => HistoryExpensesPage(),
         '/news-screen': (context) => const LongListScreen(),
         '/datas-screen': (context) => const DatasScreen(),
-        '/try-screen': (context) => const TryScreen()
+        '/customer-form': (context) => const CustomerFormScreen(),
+        '/customer-screen': (context) => const CustomerScreen(),
       },
     );
   }
@@ -52,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
     HistoryExpensesPage(),
     LongListScreen(),
     DatasScreen(),
-    TryScreen()
+    CustomerScreen(),
   ];
 
   final List<String> _appBarTitles = const [
@@ -61,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
     'History',
     'List',
     'Datas screen',
-    'Try screen'
+    'Customer service'
   ];
 
   void _onItemTapped(int index) {
@@ -127,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             listTilePush(context, 'News Screen', '/news-screen'),
             listTilePush(context, 'Datas Screen', '/datas-screen'),
-            listTilePush(context, 'Try Screen', '/try-screen'),
+            listTilePush(context, 'Customer Service', '/customer-screen'),
           ],
         ),
       ),

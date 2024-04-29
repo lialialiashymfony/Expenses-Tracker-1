@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_app/screens/database_helper.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class EditExpensePage extends StatefulWidget {
   final Map<String, dynamic> expense;
@@ -45,7 +46,14 @@ class _EditExpensePageState extends State<EditExpensePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Expense'), // Judul halaman
+        title: Text(
+          'Edit Expense',
+          style: GoogleFonts.poppins(
+            fontSize: 22,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ), // Judul halaman
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

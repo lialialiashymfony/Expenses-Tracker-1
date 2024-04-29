@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:my_app/dto/datas.dart';
+import 'package:my_app/dto/issue.dart';
 import 'package:my_app/dto/news.dart';
 import 'package:my_app/endpoints/endpoints.dart';
 
@@ -60,5 +61,24 @@ class DataService {
     String jsonData = jsonEncode(data);
     await http.put(Uri.parse('${Endpoints.datas}/$id'),
         body: jsonData, headers: {'Content-type': 'application/json'});
+  }
+
+  static Future<List<Issues>> fetchIssueNIM() async {
+    final response = await http.get(Uri.parse(Endpoints.dataNIM));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return (data['datas'] as List<dynamic>)
+          .map((item) => Issues.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } else {
+      // Handle error
+      throw Exception('Failed to load data');
+    }
+  }
+
+  static Future<void> deleteIssuesNIM(String id) async {
+    // kalu tidak jalan hubungi yang berkepentingan seperti tuhan, atau ganti id jadi String
+    await http.delete(Uri.parse('${Endpoints.dataNIM}/$id'),
+        headers: {'Content-type': 'application/json'});
   }
 }

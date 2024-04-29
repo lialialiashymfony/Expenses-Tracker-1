@@ -109,7 +109,7 @@ class _FormScreenState extends State<FormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue.shade900,
+      backgroundColor: Colors.pink.shade900,
       appBar: AppBar(
         title: null,
         backgroundColor: Colors.transparent,
