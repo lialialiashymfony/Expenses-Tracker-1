@@ -11,4 +11,8 @@ class Endpoints {
   static const String baseURLuts = 'https://simobile.singapoly.com';
   static const String datasuts = "$baseURLuts/api/customer-service";
   static const String dataNIM = "$datasuts/2215091033";
+
+  //balance
+  static const String balance = "$baseURLLive/api/balance/2215091033";
+  static const String spending = "$baseURLLive/api/spending/2215091033";
 }

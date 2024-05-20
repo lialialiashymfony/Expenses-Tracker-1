@@ -1,15 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:my_app/dto/issue.dart';
 import 'package:my_app/endpoints/endpoints.dart';
-import 'package:my_app/screens/routes/FormScreen/cutomer_form.dart';
-import 'package:my_app/screens/routes/SecondScreen/Customer Screen/customer_screen.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:my_app/screens/routes/SecondScreen/Customer%20Screen/customer_screen.dart';
 
 class EditCustomer extends StatefulWidget {
   const EditCustomer({Key? key, required this.issues}) : super(key: key);
@@ -26,11 +23,18 @@ class _EditCustomerState extends State<EditCustomer> {
   File? galleryFile;
   final picker = ImagePicker();
 
+  late String division;
+  late String priority;
+
   @override
   void initState() {
     super.initState();
     _titleController.text = widget.issues.title;
     _descriptionController.text = widget.issues.deskripsi;
+    division =
+        widget.issues.division ?? 'IT'; // Default to IT if division is null
+    priority =
+        widget.issues.priority ?? 'Low'; // Default to Low if priority is null
   }
 
   _showPicker({
@@ -75,7 +79,7 @@ class _EditCustomerState extends State<EditCustomer> {
         if (xfilePick != null) {
           galleryFile = File(pickedFile!.path);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(// is this context <<<
+          ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Nothing is selected')));
         }
       },
@@ -87,29 +91,30 @@ class _EditCustomerState extends State<EditCustomer> {
       return; // Handle case where no image is selected
     }
 
-    var request = MultipartRequest(
+    var request = http.MultipartRequest(
         'POST', Uri.parse('${Endpoints.dataNIM}/${widget.issues.idIssues}'));
     request.fields['title_issues'] = _titleController.text;
     request.fields['description_issues'] = _descriptionController.text;
-    request.fields['rating'] = rating.toString();
+    request.fields['rating'] = rating.toString(); // Use existing rating
+    request.fields['division'] = division; // Use updated division
+    request.fields['priority'] = priority; // Use updated priority
     if (galleryFile != null) {
-      var multipartFile = await MultipartFile.fromPath(
+      var multipartFile = await http.MultipartFile.fromPath(
         'image', // ganti field sesui in
         galleryFile!.path,
       );
       request.files.add(multipartFile);
     }
 
-    request.send().then((response) {
-      // Handle response (success or error)
-      if (response.statusCode == 200) {
-        debugPrint('Data and image posted successfully!');
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const CustomerScreen()));
-      } else {
-        debugPrint('Error posting data: ${response.statusCode}');
-      }
-    });
+    var response = await request.send();
+    // Handle response (success or error)
+    if (response.statusCode == 200) {
+      debugPrint('Data and image posted successfully!');
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const CustomerScreen()));
+    } else {
+      debugPrint('Error posting data: ${response.statusCode}');
+    }
   }
 
   @override
@@ -139,41 +144,66 @@ class _EditCustomerState extends State<EditCustomer> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    'Submit Update Issues!',
-                    style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.pink),
-                  ),
-                ],
+              const SizedBox(height: 20),
+              const Text(
+                'Division',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.pink,
+                ),
               ),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-              // const Text(
-              //   'Title Issue',
-              //   style: TextStyle(
-              //       fontSize: 15,
-              //       fontWeight: FontWeight.bold,
-              //       color: Colors.pink),
-              // ),
-              const SizedBox(
-                height: 20,
+              DropdownButton<String>(
+                value: division,
+                items: ['IT', 'Billing', 'Helpdesk'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      division = newValue;
+                    });
+                  }
+                },
               ),
+              const SizedBox(height: 10),
+              const Text(
+                'Priority',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.pink,
+                ),
+              ),
+              DropdownButton<String>(
+                value: priority,
+                items: ['Low', 'Medium', 'High'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      priority = newValue;
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: 10),
               const Text(
                 'Title Issue',
                 style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.pink),
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.pink,
+                ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               TextField(
                 controller: _titleController,
                 maxLength: 50,
@@ -185,9 +215,7 @@ class _EditCustomerState extends State<EditCustomer> {
                   hintText: "Title",
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               const Text('Description Issue',
                   style: TextStyle(
                       fontSize: 15,
@@ -231,9 +259,7 @@ class _EditCustomerState extends State<EditCustomer> {
                 onRatingUpdate: ratingUpdate,
                 initialRating: widget.issues.rating.toDouble(),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               const Text('Picture',
                   style: TextStyle(
                       fontSize: 15,

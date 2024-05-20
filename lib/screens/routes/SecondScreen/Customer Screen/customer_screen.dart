@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:my_app/components/bottom_up_transation.dart';
 import 'package:my_app/dto/issue.dart';
-// import 'package:my_app/dto/issues.dart';
 import 'package:my_app/endpoints/endpoints.dart';
 import 'package:my_app/services/data_services.dart';
 import 'package:my_app/screens/routes/FormScreen/cutomer_form.dart';
@@ -26,7 +25,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
     _dataIssues = DataService.fetchIssueNIM();
   }
 
-  void showIsian(Issues item) {
+  void showIsian(Issues item) async {
+    await _deleteDatas(item.idIssues.toString());
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -40,12 +40,10 @@ class _CustomerScreenState extends State<CustomerScreen> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
                 child: Image.network(
-                  Uri.parse(
-                          '${Endpoints.baseURLuts}/public/${item.imageUrl!}') // ganti nanti pake yang api
+                  Uri.parse('${Endpoints.baseURLuts}/public/${item.imageUrl!}')
                       .toString(),
                   errorBuilder: (context, error, stackTrace) =>
                       const Icon(Icons.error),
-                  // height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
@@ -114,8 +112,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   IconButton(
                     icon: Icon(Icons.delete),
                     onPressed: () {
-                      // DataService.deleteIssues(item.idIssues.toString()); ilangin toString kalo make ID :)
-                      // _deleteDatas(item.idIssues);
+                      _deleteDatas(item.idIssues.toString());
                     },
                   ),
                   IconButton(
@@ -153,45 +150,22 @@ class _CustomerScreenState extends State<CustomerScreen> {
     );
   }
 
-  void _deleteDatas(String id) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Konfirmasi"),
-        content: Text("Apakah Anda yakin ingin menghapus postingan ini?"),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              try {
-                await DataService.deleteIssuesNIM(id);
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    backgroundColor: Colors.red,
-                    content: Text('Data berhasil dihapus!'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-                setState(() {
-                  _dataIssues = DataService.fetchIssueNIM();
-                });
-              } catch (error) {
-                debugPrint('Gagal menghapus data: $error');
-              }
-            },
-
-            // sesuai in sama yang di api
-            child: Text('Ya'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Tidak'),
-          ),
-        ],
-      ),
-    );
+  Future<void> _deleteDatas(String id) async {
+    try {
+      await DataService.deleteIssuesNIM(id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Data berhasil dihapus!'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      setState(() {
+        _dataIssues = DataService.fetchIssueNIM();
+      });
+    } catch (error) {
+      debugPrint('Gagal menghapus data: $error');
+    }
   }
 
   @override
@@ -234,83 +208,86 @@ class _CustomerScreenState extends State<CustomerScreen> {
                               color: Colors.pink.shade100,
                               borderRadius: BorderRadius.circular(8.0),
                               image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(
-                                    Uri.parse(
-                                            '${Endpoints.baseURLuts}/public/${item.imageUrl!}') // ganti pake yang di api dlu
-                                        .toString(),
-                                  )),
+                                fit: BoxFit.cover,
+                                image: NetworkImage(
+                                  Uri.parse(
+                                          '${Endpoints.baseURLuts}/public/${item.imageUrl!}')
+                                      .toString(),
+                                ),
+                              ),
                             ),
                           ),
                           SizedBox(width: 10),
                           Expanded(
-                              child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                (item.title.length > 20)
-                                    ? item.title.substring(0, 20) + '...'
-                                    : item.title,
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              RatingBar(
-                                itemSize: 20,
-                                ratingWidget: RatingWidget(
-                                  full: const Icon(
-                                    Icons.star,
-                                    color: Colors.pink,
-                                  ),
-                                  half: const Icon(
-                                    Icons.star_half,
-                                    color: Colors.pink,
-                                  ),
-                                  empty: const Icon(
-                                    Icons.star_border,
-                                    color: Colors.pink,
-                                  ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  (item.title.length > 20)
+                                      ? item.title.substring(0, 20) + '...'
+                                      : item.title,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                ignoreGestures: true,
-                                onRatingUpdate: (double rating) {},
-                                initialRating: item.rating.toDouble(),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                (item.deskripsi.length > 100)
-                                    ? item.deskripsi.substring(0, 100) + '...'
-                                    : item.deskripsi,
-                                style: TextStyle(fontSize: 16),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {
-                                      _deleteDatas(item.idIssues.toString());
-                                    },
+                                RatingBar(
+                                  itemSize: 20,
+                                  ratingWidget: RatingWidget(
+                                    full: const Icon(
+                                      Icons.star,
+                                      color: Colors.pink,
+                                    ),
+                                    half: const Icon(
+                                      Icons.star_half,
+                                      color: Colors.pink,
+                                    ),
+                                    empty: const Icon(
+                                      Icons.star_border,
+                                      color: Colors.pink,
+                                    ),
                                   ),
-                                  IconButton(
-                                    icon: Icon(Icons.edit),
-                                    onPressed: () {
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditCustomer(
-                                                    issues: item,
-                                                  )));
-                                    },
-                                  ),
-                                ],
-                              )
-                            ],
-                          )),
+                                  ignoreGestures: true,
+                                  onRatingUpdate: (double rating) {},
+                                  initialRating: item.rating.toDouble(),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  (item.deskripsi.length > 100)
+                                      ? item.deskripsi.substring(0, 100) + '...'
+                                      : item.deskripsi,
+                                  style: TextStyle(fontSize: 16),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () {
+                                        _deleteDatas(item.idIssues.toString());
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.edit),
+                                      onPressed: () {
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditCustomer(
+                                                      issues: item,
+                                                    )));
+                                      },
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),

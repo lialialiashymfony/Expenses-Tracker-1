@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_app/cubit/balance/cubit/balance_cubit.dart';
+import 'package:my_app/cubit/counter_cubit.dart';
 import 'package:my_app/screens/custom_screen.dart';
 import 'package:my_app/screens/history_expenses_page.dart';
 import 'package:my_app/screens/home_screen.dart';
 import 'package:my_app/screens/add_expense_page.dart';
 import 'package:my_app/screens/news_screen.dart';
+import 'package:my_app/screens/routes/BalanceScreen/balance_screen.dart';
+import 'package:my_app/screens/routes/CounterScreen/counter_screen.dart';
 import 'package:my_app/screens/routes/FormScreen/cutomer_form.dart';
 import 'package:my_app/screens/routes/SecondScreen/Customer%20Screen/customer_screen.dart';
 import 'package:my_app/screens/routes/SecondScreen/DatasDcreen/datas_screen.dart';
+import 'package:my_app/screens/routes/SpendingScreen/spending_screen.dart';
 import 'package:my_app/screens/try.dart';
+import 'package:my_app/screens/routes/WelcomeScreen/welcome_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,22 +25,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Lia Cantik Jelita',
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CounterCubit>(create: (context) => CounterCubit()),
+        BlocProvider<BalanceCubit>(create: (context) => BalanceCubit())
+      ],
+      child: MaterialApp(
+        title: 'Lia',
+        theme: ThemeData(
+          primarySwatch: Colors.pink,
+        ),
+        // home: const MyHomePage(),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const MyHomePage(title: 'Home Page'),
+          '/add-expenses-page': (context) => const AddExpensesPage(),
+          '/history-expenses-page': (context) => HistoryExpensesPage(),
+          '/news-screen': (context) => const LongListScreen(),
+          '/datas-screen': (context) => const DatasScreen(),
+          '/customer-form': (context) => const CustomerFormScreen(),
+          '/customer-screen': (context) => const CustomerScreen(),
+          '/counter-screen': (context) => const CounterScreen(),
+          '/welcome-screen': (context) => const WelcomeScreen(),
+          '/balance-screen': (context) => const BalanceScreen(),
+          '/spending-screen': (context) => const SpendingScreen()
+        },
       ),
-      // home: const MyHomePage(),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const MyHomePage(title: 'Home Page'),
-        '/add-expenses-page': (context) => const AddExpensesPage(),
-        '/history-expenses-page': (context) => HistoryExpensesPage(),
-        '/news-screen': (context) => const LongListScreen(),
-        '/datas-screen': (context) => const DatasScreen(),
-        '/customer-form': (context) => const CustomerFormScreen(),
-        '/customer-screen': (context) => const CustomerScreen(),
-      },
     );
   }
 }
@@ -57,6 +74,10 @@ class _MyHomePageState extends State<MyHomePage> {
     LongListScreen(),
     DatasScreen(),
     CustomerScreen(),
+    CounterScreen(),
+    WelcomeScreen(),
+    BalanceScreen(),
+    SpendingScreen()
   ];
 
   final List<String> _appBarTitles = const [
@@ -65,7 +86,11 @@ class _MyHomePageState extends State<MyHomePage> {
     'History',
     'List',
     'Datas screen',
-    'Customer service'
+    'Customer service',
+    'Counter screen',
+    'Welcome screen',
+    'Balance Screen',
+    'Spending Screen'
   ];
 
   void _onItemTapped(int index) {
@@ -132,6 +157,10 @@ class _MyHomePageState extends State<MyHomePage> {
             listTilePush(context, 'News Screen', '/news-screen'),
             listTilePush(context, 'Datas Screen', '/datas-screen'),
             listTilePush(context, 'Customer Service', '/customer-screen'),
+            listTilePush(context, 'Counter Screen', '/counter-screen'),
+            listTilePush(context, 'Welcome Screen', '/welcome-screen'),
+            listTilePush(context, 'Balance Screen', '/balance-screen'),
+            listTilePush(context, 'Spending Screen', '/spending-screen'),
           ],
         ),
       ),

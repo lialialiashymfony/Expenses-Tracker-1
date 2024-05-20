@@ -1,12 +1,11 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:my_app/endpoints/endpoints.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:my_app/endpoints/endpoints.dart';
 import 'package:my_app/screens/routes/SecondScreen/Customer Screen/customer_screen.dart';
 
 class CustomerFormScreen extends StatefulWidget {
@@ -19,19 +18,16 @@ class CustomerFormScreen extends StatefulWidget {
 class _CustomerFormScreenState extends State<CustomerFormScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  // final _ratingController = TextEditingController();
-
-  // String _title = "";
-  // String _description = "";
-  // // double _rating = 0;
   File? _galleryFile;
   final picker = ImagePicker();
 
   List<String> divisions = ['IT', 'Billing', 'Helpdesk'];
   String? _selectedDivision;
 
-  List<String> priority = ['High', 'Medium', 'Low'];
+  List<String> priorities = ['High', 'Medium', 'Low'];
   String? _selectedPriority;
+
+  double _rating = 0; // Definisi variabel rating di dalam class
 
   _showPicker({required BuildContext context}) {
     showModalBottomSheet(
@@ -63,34 +59,36 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
     );
   }
 
-  Future getImage(
-    ImageSource img,
-  ) async {
+  Future getImage(ImageSource img) async {
     final pickedFile = await picker.pickImage(source: img);
     XFile? xfilePick = pickedFile;
-    setState(
-      () {
-        if (xfilePick != null) {
-          _galleryFile = File(pickedFile!.path);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Nothing is selected')));
-        }
-      },
-    );
+    setState(() {
+      if (xfilePick != null) {
+        _galleryFile = File(pickedFile!.path);
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Nothing is selected')));
+      }
+    });
   }
 
   Future<void> _postDataWithImage(BuildContext context) async {
     if (_galleryFile == null || _titleController.text.isEmpty) {
       return; // Handle case where no image or title is provided
     }
+    if (_selectedDivision == null || _selectedPriority == null) {
+      return; // Handle case where no division or priority is selected
+    }
 
-    var request = MultipartRequest('POST', Uri.parse(Endpoints.dataNIM));
+    var request = http.MultipartRequest('POST', Uri.parse(Endpoints.dataNIM));
     request.fields['title_issues'] = _titleController.text;
     request.fields['description_issues'] = _descriptionController.text;
-    request.fields['rating'] = rating.toString();
+    request.fields['rating'] =
+        _rating.toStringAsFixed(1); // Fixed the rating to string conversion
+    request.fields['division'] = _selectedDivision!;
+    request.fields['priority'] = _selectedPriority!;
 
-    var multipartFile = await MultipartFile.fromPath(
+    var multipartFile = await http.MultipartFile.fromPath(
       'image',
       _galleryFile!.path,
     );
@@ -100,25 +98,13 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
       // Handle response (success or error)
       if (response.statusCode == 201) {
         debugPrint('Data and image posted successfully!');
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const CustomerScreen()));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const CustomerScreen()),
+        );
       } else {
         debugPrint('Error posting data: ${response.statusCode}');
       }
-    });
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose(); // Dispose of controller when widget is removed
-    _descriptionController.dispose();
-    super.dispose();
-  }
-
-  double rating = 0;
-  void ratingUpdate(double userRating) {
-    setState(() {
-      rating = userRating;
     });
   }
 
@@ -274,7 +260,12 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                                   color: Colors.pink,
                                 ),
                               ),
-                              onRatingUpdate: ratingUpdate,
+                              onRatingUpdate: (rating) {
+                                setState(() {
+                                  _rating =
+                                      rating; // Assign the value to the class variable
+                                });
+                              },
                             ),
                             const SizedBox(
                               height: 10,
@@ -307,7 +298,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                                     Text('Priority'),
                                     DropdownButton<String>(
                                       value: _selectedPriority,
-                                      items: priority.map((String value) {
+                                      items: priorities.map((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(value),
